@@ -40,8 +40,7 @@ public class WebSecurity {
                 .antMatchers("/api/login*").permitAll()
                 .antMatchers(HttpMethod.POST,"/api/clients*").permitAll()
                 .antMatchers("/h2-console/**", "/rest/**").hasAuthority("ADMIN")
-//                .antMatchers("/api/**").authenticated()
-                .antMatchers("/api/**").permitAll()
+                .antMatchers("/api/**").authenticated()
                 .and().
                 formLogin()
                 .usernameParameter("email")

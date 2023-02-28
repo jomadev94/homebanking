@@ -29,7 +29,7 @@ public class WebAuthentication extends GlobalAuthenticationConfigurerAdapter {
                     return new User(client.getEmail(), client.getPassword(), AuthorityUtils.createAuthorityList("ADMIN"));
                 return new User(client.getEmail(), client.getPassword(), AuthorityUtils.createAuthorityList("CLIENT"));
                 // Cuando queremos asignar mas de un rol.
-                //AuthorityUtils.commaSeparatedStringToAuthorityList("ROL_1,ROL_2,ROL_3");
+                // AuthorityUtils.commaSeparatedStringToAuthorityList("ROL_1,ROL_2,ROL_3");
             }
             throw new UsernameNotFoundException("Unknown user:" + inputName);
         });

@@ -1,13 +1,17 @@
 package com.mindhub.homebanking.dtos;
 import com.mindhub.homebanking.models.Client;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ClientDTO {
 
     private long id;
+
     private String firstName;
+
     private String lastName;
     private String email;
     private List<AccountDTO> accounts;
