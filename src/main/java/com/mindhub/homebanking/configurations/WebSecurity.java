@@ -26,7 +26,8 @@ public class WebSecurity {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()
                 // Spring Security should completely ignore URLs starting with /resources/
-                .antMatchers("/resources/**");
+                .antMatchers("/resources/**")
+                ;
     }
 
     @Bean
@@ -38,7 +39,7 @@ public class WebSecurity {
                 .headers().frameOptions().disable().and()
                 .authorizeRequests()
                 .antMatchers("/api/login*").permitAll()
-                .antMatchers(HttpMethod.POST,"/api/clients*").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/clients*").permitAll()
                 .antMatchers("/h2-console/**", "/rest/**").hasAuthority("ADMIN")
                 .antMatchers("/api/**").authenticated()
                 .and().
@@ -50,7 +51,8 @@ public class WebSecurity {
                 .successHandler((req, res, auth) -> clearAuthenticationAttributes(req)).and().
                 logout()
                 .logoutUrl("/api/logout")
-                .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler());
+                .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler())
+        ;
 
         return http.build();
     }

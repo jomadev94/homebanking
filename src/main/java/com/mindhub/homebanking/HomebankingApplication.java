@@ -26,7 +26,7 @@ public class HomebankingApplication {
     @Bean
     public CommandLineRunner initData(ClientRepository clientRepo, AccountRepository accountRepo, TransactionRepository transactionRepo, LoanRepository loanRepo, ClientLoanRepository clientLoanRepo, CardRepository cardRepo) {
         return (args) -> {
-            Client client1 = new Client("Melba", "Lorenzo", "melba@mindhub.com",passwordEncoder.encode("1234"));
+            Client client1 = new Client("Melba", "Lorenzo", "melba@mindhub.com", passwordEncoder.encode("1234"));
             Client client2 = new Client("Jose Maria", "Pereyra", "jomapereyra@hotmail.com", passwordEncoder.encode("5678"));
             Client client3 = new Client("admin", "admin", "admin", passwordEncoder.encode("1111"));
             Account account1 = new Account("VIN001", LocalDateTime.now(), 5000.0, client1);
@@ -56,9 +56,9 @@ public class HomebankingApplication {
             transactionRepo.save(new Transaction(TransactionType.DEBIT, -5210.0, "videojuegos", account3));
             transactionRepo.save(new Transaction(TransactionType.CREDIT, 850.20, "generico", account3));
             transactionRepo.save(new Transaction(TransactionType.DEBIT, -1300.0, "generico", account3));
-            cardRepo.save(new Card(client1.getFirstName().toUpperCase() + " "+client1.getLastName().toUpperCase(),CardType.DEBIT,CardColor.GOLD,"3456678907321843",428,LocalDateTime.now().plusYears(5),LocalDateTime.now(),client1));
-            cardRepo.save(new Card(client1.getFirstName().toUpperCase() + " "+client1.getLastName().toUpperCase(),CardType.DEBIT,CardColor.TITANIUM,"4597654375285822",354,LocalDateTime.now().plusYears(5),LocalDateTime.now(),client1));
-            cardRepo.save(new Card(client2.getFirstName().toUpperCase() + " "+client2.getLastName().toUpperCase(),CardType.CREDIT,CardColor.SILVER,"4750232217443716",221,LocalDateTime.now().plusYears(5),LocalDateTime.now(),client2));
+            cardRepo.save(new Card(client1.getFirstName().toUpperCase() + " " + client1.getLastName().toUpperCase(), CardType.DEBIT, CardColor.GOLD, "3456678907321843", 428, LocalDateTime.now().plusYears(5), LocalDateTime.now(), client1));
+            cardRepo.save(new Card(client1.getFirstName().toUpperCase() + " " + client1.getLastName().toUpperCase(), CardType.DEBIT, CardColor.TITANIUM, "4597654375285822", 354, LocalDateTime.now().plusYears(5), LocalDateTime.now(), client1));
+            cardRepo.save(new Card(client2.getFirstName().toUpperCase() + " " + client2.getLastName().toUpperCase(), CardType.CREDIT, CardColor.SILVER, "4750232217443716", 221, LocalDateTime.now().plusYears(5), LocalDateTime.now(), client2));
         };
     }
 

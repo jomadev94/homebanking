@@ -5,6 +5,8 @@ import com.mindhub.homebanking.dtos.RegisterDTO;
 import com.mindhub.homebanking.dtos.ResponseDTO;
 import com.mindhub.homebanking.models.Client;
 import com.mindhub.homebanking.services.ClientService;
+import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,13 +19,16 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @RestController
+@Api(tags = "Client")
 @RequestMapping("/api")
 public class ClientController {
 
     @Autowired
     private ClientService clientService;
 
+    @Operation(summary = "Get clients")
     @GetMapping("/clients")
     public ResponseEntity<ResponseDTO> getClients() {
         List<ClientDTO> clients = clientService.getClients().stream().map(ClientDTO::new).collect(Collectors.toList());

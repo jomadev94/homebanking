@@ -26,7 +26,18 @@ public class RegisterDTO {
     @Size(min = 8, max = 20, message = "Password must be less than 20 and greater than 8 characters")
     private String password;
 
-    public RegisterDTO() {
+    public RegisterDTO(String firstName, String lastName, String email, String password) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+    }
+
+    public RegisterDTO(Client client){
+        this.firstName=client.getFirstName();
+        this.lastName=client.getLastName();
+        this.email= client.getEmail();
+        this.password= client.getPassword();
     }
 
     public String getFirstName() {
