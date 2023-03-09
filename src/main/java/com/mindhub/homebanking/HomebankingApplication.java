@@ -26,9 +26,9 @@ public class HomebankingApplication {
     @Bean
     public CommandLineRunner initData(ClientRepository clientRepo, AccountRepository accountRepo, TransactionRepository transactionRepo, LoanRepository loanRepo, ClientLoanRepository clientLoanRepo, CardRepository cardRepo) {
         return (args) -> {
-            Client client1 = new Client("Melba", "Lorenzo", "melba@mindhub.com", passwordEncoder.encode("1234"));
-            Client client2 = new Client("Jose Maria", "Pereyra", "jomapereyra@hotmail.com", passwordEncoder.encode("5678"));
-            Client client3 = new Client("admin", "admin", "admin", passwordEncoder.encode("1111"));
+            Client client1 = new Client("Melba", "Lorenzo", "melba@mindhub.com", passwordEncoder.encode("1234"), Role.CLIENT);
+            Client client2 = new Client("Jose Maria", "Pereyra", "jomapereyra@hotmail.com", passwordEncoder.encode("5678"), Role.CLIENT);
+            Client client3 = new Client("admin", "admin", "admin", passwordEncoder.encode("1111"), Role.ADMIN);
             Account account1 = new Account("VIN001", LocalDateTime.now(), 5000.0, client1);
             Account account2 = new Account("VIN002", LocalDateTime.now().plusDays(1), 7500.0, client1);
             Account account3 = new Account("VIN003", LocalDateTime.now(), 520.0, client2);

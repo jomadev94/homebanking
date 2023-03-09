@@ -1,25 +1,30 @@
 package com.mindhub.homebanking.configurations;
 
+import com.mindhub.homebanking.filters.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.WebAttributes;
-import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @EnableWebSecurity
 @Configuration
+@EnableMethodSecurity(prePostEnabled = true)
 public class WebSecurity {
 
     @Bean
@@ -31,28 +36,39 @@ public class WebSecurity {
     }
 
     @Bean
+    AuthenticationManager authenticationManager(AuthenticationConfiguration ac) throws Exception {
+        return ac.getAuthenticationManager();
+    }
+
+    @Bean
+    JwtAuthFilter jwtAuthFilter(){
+        return new JwtAuthFilter();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                // Disabled csrf tokens validation
                 .csrf().disable()
-                .cors().and()
+                // Action to make when auth excepcion appear
                 .exceptionHandling().authenticationEntryPoint((req, res, exc) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED)).and()
-                .headers().frameOptions().disable().and()
+                // Disabled sessions
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                // Add Jwt filter
+                .addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class)
+                // Enable cors
+                .cors().and()
+                // Routes permissions
                 .authorizeRequests()
-                .antMatchers("/api/login*").permitAll()
+                .antMatchers("/api/clients/login*").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/clients*").permitAll()
                 .antMatchers("/h2-console/**", "/rest/**").hasAuthority("ADMIN")
-                .antMatchers("/api/**").authenticated()
-                .and().
-                formLogin()
-                .usernameParameter("email")
-                .passwordParameter("password")
-                .loginPage("/api/login")
-                .failureHandler((req, res, exc) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED))
-                .successHandler((req, res, auth) -> clearAuthenticationAttributes(req)).and().
-                logout()
-                .logoutUrl("/api/logout")
-                .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler())
-        ;
+                .antMatchers("/api/**").authenticated();
 
         return http.build();
     }
@@ -69,9 +85,6 @@ public class WebSecurity {
         return source;
     }
 
-    private void clearAuthenticationAttributes(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        if (session != null) session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
-    }
+
 
 }

@@ -2,6 +2,7 @@ package com.mindhub.homebanking.services;
 
 import com.mindhub.homebanking.dtos.CreateCardDTO;
 import com.mindhub.homebanking.exceptions.ForbiddenException;
+import com.mindhub.homebanking.exceptions.NotFoundException;
 import com.mindhub.homebanking.exceptions.UnauthorizedException;
 import com.mindhub.homebanking.models.Card;
 import com.mindhub.homebanking.models.Client;
@@ -22,8 +23,7 @@ public class CardService {
     private CardRepository cardRepository;
 
     public Card create(Authentication auth, CreateCardDTO card) {
-        if (auth == null) throw new UnauthorizedException();
-        Client current = clientRepository.findByEmail(auth.getName());
+        Client current = clientRepository.findByEmail(auth.getName()).orElseThrow(()-> new NotFoundException("Client not found"));
         if (current.getCards().stream().filter(c -> c.getType().equals(card.getType())).count() == 3)
             throw new ForbiddenException("The maximum number of cards allowed was reached");
         StringBuilder cardNumber = new StringBuilder();

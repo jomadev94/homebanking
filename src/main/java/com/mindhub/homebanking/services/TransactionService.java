@@ -2,6 +2,7 @@ package com.mindhub.homebanking.services;
 
 import com.mindhub.homebanking.dtos.AccountTransactionDTO;
 import com.mindhub.homebanking.exceptions.ForbiddenException;
+import com.mindhub.homebanking.exceptions.NotFoundException;
 import com.mindhub.homebanking.models.Account;
 import com.mindhub.homebanking.models.Client;
 import com.mindhub.homebanking.models.Transaction;
@@ -28,7 +29,7 @@ public class TransactionService {
     private TransactionRepository transactionRepository;
 
     public void create(Authentication auth, AccountTransactionDTO transaction) {
-        Client current = clientRepository.findByEmail(auth.getName());
+        Client current = clientRepository.findByEmail(auth.getName()).orElseThrow(()-> new NotFoundException("Client not found"));
         if (transaction.getTo().equals(transaction.getFrom())) throw new ForbiddenException("Account from and Account to must be different");
         Account from = accountRepository.findByNumber(transaction.getFrom());
         Account to = accountRepository.findByNumber(transaction.getTo());
