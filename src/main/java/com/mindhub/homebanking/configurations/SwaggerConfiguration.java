@@ -55,7 +55,10 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
     }
 
     private SecurityContext securityContext() {
-        return SecurityContext.builder().securityReferences(defaultAuth()).build();
+        return SecurityContext.builder().securityReferences(defaultAuth()).operationSelector(o ->
+                !o.requestMappingPattern().matches("/api/clients") &&
+                        !o.requestMappingPattern().matches("/api/clients/login")
+        ).build();
     }
 
     private List<SecurityReference> defaultAuth() {
