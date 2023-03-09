@@ -3,6 +3,7 @@ package com.mindhub.homebanking.exceptions;
 import com.mindhub.homebanking.dtos.ResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -29,6 +30,11 @@ public class ControllerAdvice {
     public ResponseEntity<ResponseDTO> handleResponseException(ResponseException ex) {
         return new ResponseEntity<>(new ResponseDTO(ex.getStatus(), ex.getMessage()),
                 HttpStatus.valueOf(ex.getStatus()));
+    }
+
+    @ExceptionHandler(AuthenticationCredentialsNotFoundException.class)
+    public ResponseEntity<ResponseDTO> handleJwtException(AuthenticationCredentialsNotFoundException ex){
+        return new ResponseEntity<>(new ResponseDTO(401,ex.getMessage()),HttpStatus.UNAUTHORIZED);
     }
 
 

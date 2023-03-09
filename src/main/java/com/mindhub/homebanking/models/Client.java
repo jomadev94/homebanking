@@ -20,6 +20,8 @@ public class Client {
 
     private String password;
 
+    private Role role;
+
     @OneToMany(mappedBy = "client", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
     private List<Account> accounts = new ArrayList<>();
 
@@ -32,11 +34,12 @@ public class Client {
     public Client() {
     }
 
-    public Client(String firstName, String lastName, String email, String password) {
+    public Client(String firstName, String lastName, String email, String password, Role role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
+        this.role=role;
     }
 
     public long getId() {
@@ -114,5 +117,13 @@ public class Client {
 
     public void setClientLoans(List<ClientLoan> clientLoans) {
         this.clientLoans = clientLoans;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

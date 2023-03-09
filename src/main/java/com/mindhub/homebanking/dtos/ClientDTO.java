@@ -1,5 +1,6 @@
 package com.mindhub.homebanking.dtos;
 import com.mindhub.homebanking.models.Client;
+import com.mindhub.homebanking.models.Role;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -19,7 +20,7 @@ public class ClientDTO {
 
     private List<CardDTO> cards;
 
-    public ClientDTO(){}
+    private Role role;
 
     public ClientDTO(Client client){
         this.id= client.getId();
@@ -29,6 +30,7 @@ public class ClientDTO {
         this.accounts= client.getAccounts().stream().map(AccountDTO::new).collect(Collectors.toList());
         this.loans= client.getLoans().stream().map(ClientLoanDTO::new).collect(Collectors.toList());
         this.cards= client.getCards().stream().map(CardDTO::new).collect(Collectors.toList());
+        this.role=client.getRole();
     }
 
     public long getId() {
@@ -85,5 +87,13 @@ public class ClientDTO {
 
     public void setCards(List<CardDTO> cards) {
         this.cards = cards;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

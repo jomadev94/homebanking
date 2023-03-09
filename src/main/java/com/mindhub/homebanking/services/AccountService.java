@@ -38,7 +38,7 @@ public class AccountService {
     }
 
     public Account create(Authentication auth){
-        Client current=clientRepository.findByEmail(auth.getName());
+        Client current=clientRepository.findByEmail(auth.getName()).orElseThrow(()-> new NotFoundException("Client not found"));
         if(current.getAccounts().size() == 3){
             throw new ForbiddenException("The maximum number of accounts allowed was reached");
         }
