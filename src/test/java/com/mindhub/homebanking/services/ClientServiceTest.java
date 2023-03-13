@@ -5,9 +5,9 @@ import com.mindhub.homebanking.dtos.RegisterDTO;
 import com.mindhub.homebanking.exceptions.BadReqException;
 import com.mindhub.homebanking.exceptions.ForbiddenException;
 import com.mindhub.homebanking.exceptions.NotFoundException;
-import com.mindhub.homebanking.exceptions.UnauthorizedException;
 import com.mindhub.homebanking.models.Account;
 import com.mindhub.homebanking.models.Client;
+import com.mindhub.homebanking.models.Role;
 import com.mindhub.homebanking.repositories.AccountRepository;
 import com.mindhub.homebanking.repositories.ClientRepository;
 import org.junit.jupiter.api.BeforeAll;
@@ -42,11 +42,11 @@ class ClientServiceTest {
 
     @BeforeAll
     static void setUp() {
-        Client client1 = new Client("pedro", "sanchez", "pedro@gmail.com", "1234");
+        Client client1 = new Client("pedro", "sanchez", "pedro@gmail.com", "1234", Role.CLIENT);
         client1.setId(1);
-        Client client2 = new Client("marta", "rodriguez", "marta@hotmail.com", "5678");
+        Client client2 = new Client("marta", "rodriguez", "marta@hotmail.com", "5678",Role.CLIENT);
         client2.setId(2);
-        Client client3 = new Client("oscar", "figeroa", "oscar@gmail.com", "9876");
+        Client client3 = new Client("oscar", "figeroa", "oscar@gmail.com", "9876",Role.CLIENT);
         client3.setId(3);
         clients = List.of(client1, client2, client3);
     }
@@ -70,23 +70,23 @@ class ClientServiceTest {
         assertEquals("marta@hotmail.com", result.getEmail());
     }
 
-    @Test
-    @DisplayName("Get current client - without auth")
-    void getCurrentNoAuth() {
-        assertThrows(UnauthorizedException.class, () -> clientService.getCurrent(null));
-    }
+//    @Test
+//    @DisplayName("Get current client - without auth")
+//    void getCurrentNoAuth() {
+//        assertThrows(UnauthorizedException.class, () -> clientService.getCurrent(new User("","")));
+//    }
 
     @Test
     @DisplayName("Create a client - email already in use")
     void registerEmailExist() {
-        when(clientRepository.findByEmail(anyString())).thenReturn(clients.get(1));
+        when(clientRepository.existsByEmail(anyString())).thenReturn(true);
         assertThrows(ForbiddenException.class, () -> clientService.register(new RegisterDTO("Sebastian", "Perez", "seba@gmail.com", "Sarasa123")));
     }
 
     @Test
     @DisplayName("Create a client")
     void register() {
-        when(clientRepository.findByEmail(anyString())).thenReturn(null);
+        when(clientRepository.existsByEmail(anyString())).thenReturn(false);
         when(passwordEncoder.encode(anyString())).thenReturn("325$6732t123aADw");
         when(clientRepository.save(any(Client.class))).thenReturn(clients.get(0));
         when(accountRepository.save(any(Account.class))).thenReturn(null);

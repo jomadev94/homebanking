@@ -2,6 +2,7 @@ package com.mindhub.homebanking.utils;
 
 
 import com.mindhub.homebanking.exceptions.UnauthorizedException;
+import com.mindhub.homebanking.models.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -33,6 +34,16 @@ public class TokenUtils {
         claims.put("sub", email);
         return Jwts.builder()
                 .setClaims(claims)
+                .setIssuedAt(new Date())
+                .setExpiration(expirationDate)
+                .signWith(this.getJwtKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public String generateToken(String email) {
+        Date expirationDate = new Date(System.currentTimeMillis() + EXPIRED_MIN * 1000 * 60);
+        return Jwts.builder()
+                .setSubject(email)
                 .setIssuedAt(new Date())
                 .setExpiration(expirationDate)
                 .signWith(this.getJwtKey(), SignatureAlgorithm.HS256)
