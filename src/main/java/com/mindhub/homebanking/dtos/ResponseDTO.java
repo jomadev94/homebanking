@@ -10,6 +10,8 @@ public class ResponseDTO {
     private String message;
     private Object data;
 
+    public ResponseDTO(){}
+
     public ResponseDTO(int status, String message) {
         this.status = status;
         this.message = message;

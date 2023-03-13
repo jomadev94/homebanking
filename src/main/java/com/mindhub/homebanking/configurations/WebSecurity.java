@@ -24,16 +24,8 @@ import java.util.List;
 
 @EnableWebSecurity
 @Configuration
-@EnableMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity
 public class WebSecurity {
-
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring()
-                // Spring Security should completely ignore URLs starting with /resources/
-                .antMatchers("/resources/**")
-                ;
-    }
 
     @Bean
     AuthenticationManager authenticationManager(AuthenticationConfiguration ac) throws Exception {
@@ -51,29 +43,6 @@ public class WebSecurity {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                // Disabled csrf tokens validation
-                .csrf().disable()
-                // Action to make when auth excepcion appear
-                .exceptionHandling().authenticationEntryPoint((req, res, exc) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED)).and()
-                // Disabled sessions
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                // Add Jwt filter
-                .addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class)
-                // Enable cors
-                .cors().and()
-                // Routes permissions
-                .authorizeRequests()
-                .antMatchers("/api/clients/login*").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/clients*").permitAll()
-                .antMatchers("/h2-console/**", "/rest/**").hasAuthority("ADMIN")
-                .antMatchers("/api/**").authenticated();
-
-        return http.build();
-    }
-
-    @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:5173"));
@@ -83,6 +52,42 @@ public class WebSecurity {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                // Disabled csrf tokens validation
+                .csrf().disable()
+                // Action to make when auth excepcion appear
+                .exceptionHandling().authenticationEntryPoint((req, res, exc) ->
+                        res.sendError(HttpServletResponse.SC_UNAUTHORIZED)).and()
+                // Disabled sessions
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                // Add Jwt filter
+                .addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class)
+                // Enable cors
+                .cors().and()
+                // Routes permissions
+                .authorizeRequests()
+                .antMatchers("/api/clients/login*").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/clients").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/clients").hasAuthority("ADMIN")
+                .antMatchers("/h2-console/**", "/rest/**").hasAuthority("ADMIN")
+                .antMatchers("/api/**").authenticated();
+
+        return http.build();
+    }
+
+
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring()
+                // Spring Security should completely ignore URLs starting with /resources/
+                .antMatchers("/resources/**")
+                ;
     }
 
 
