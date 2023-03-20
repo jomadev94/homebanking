@@ -26,8 +26,10 @@ public class WebAuthentication extends GlobalAuthenticationConfigurerAdapter {
             Client client = clientRepository.findByEmail(inputName);
             if (client != null) {
                 if (client.getFirstName().equals("admin"))
-                    return new User(client.getEmail(), client.getPassword(), AuthorityUtils.createAuthorityList("ADMIN"));
-                return new User(client.getEmail(), client.getPassword(), AuthorityUtils.createAuthorityList("CLIENT"));
+                    return new User(client.getEmail(), client.getPassword(),
+                            AuthorityUtils.createAuthorityList("ADMIN"));
+                return new User(client.getEmail(), client.getPassword(),
+                        AuthorityUtils.createAuthorityList("CLIENT"));
                 // Cuando queremos asignar mas de un rol.
                 // AuthorityUtils.commaSeparatedStringToAuthorityList("ROL_1,ROL_2,ROL_3");
             }
@@ -37,8 +39,8 @@ public class WebAuthentication extends GlobalAuthenticationConfigurerAdapter {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        return PasswordEncoderFactories
+                .createDelegatingPasswordEncoder();
     }
-
 
 }
