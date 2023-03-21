@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import springfox.documentation.annotations.ApiIgnore;
 import springfox.documentation.swagger.web.SecurityConfiguration;
 
 import javax.annotation.security.RolesAllowed;
@@ -32,7 +33,6 @@ public class ClientController {
     @Autowired
     private ClientService clientService;
 
-//    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "Get clients")
     @GetMapping
     public ResponseEntity<ResponseDTO> getClients() {
@@ -40,18 +40,21 @@ public class ClientController {
         return new ResponseEntity<>(new ResponseDTO(clients), HttpStatus.OK);
     }
 
+    @Operation(summary = "Get clients by id")
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDTO> getClient(@PathVariable long id) {
         ClientDTO client = new ClientDTO(clientService.getClient(id));
         return new ResponseEntity<>(new ResponseDTO(client), HttpStatus.OK);
     }
 
+    @Operation(summary = "Get current clients")
     @GetMapping("/current")
-    public ResponseEntity<ResponseDTO> getCurrentClient(Authentication auth) {
+    public ResponseEntity<ResponseDTO> getCurrentClient(@ApiIgnore Authentication auth) {
         Client current = clientService.getCurrent(auth);
         return new ResponseEntity<>(new ResponseDTO(new ClientDTO(current)), HttpStatus.OK);
     }
 
+    @Operation(summary = "Register")
     @PostMapping
     public ResponseEntity<ResponseDTO> register(@Valid @RequestBody RegisterDTO registerDTO) {
         Client client = clientService.register(registerDTO);
@@ -59,6 +62,7 @@ public class ClientController {
         return ResponseEntity.created(location).body(new ResponseDTO(201, new ClientDTO(client)));
     }
 
+    @Operation(summary = "Login")
     @PostMapping("/login")
     public ResponseEntity<ResponseDTO> login(@RequestBody LoginDTO loginDTO){
         String token= clientService.login(loginDTO);
