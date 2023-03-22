@@ -18,21 +18,16 @@ public class ResponseDTO {
     }
 
     public ResponseDTO(int status, String message, Object data) {
-        this.status = status;
-        this.message = message;
+        this(status, message);
         this.data = data;
     }
 
     public ResponseDTO(int status, Object data) {
-        this.status = status;
-        this.message = "Operation success";
-        this.data = data;
+        this(status,"Operation success",data);
     }
 
     public ResponseDTO(Object data) {
-        this.status = 200;
-        this.message = "Operation success";
-        this.data = data;
+        this(200,data);
     }
 
     public int getStatus() {

@@ -15,6 +15,12 @@ import java.util.Map;
 @RestControllerAdvice
 public class ControllerAdvice {
 
+    @ExceptionHandler(ResponseException.class)
+    public ResponseEntity<ResponseDTO> handleResponseException(ResponseException ex) {
+        return new ResponseEntity<>(new ResponseDTO(ex.getStatus(), ex.getMessage()),
+                HttpStatus.valueOf(ex.getStatus()));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ResponseDTO> handleValidationException(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
@@ -24,12 +30,6 @@ public class ControllerAdvice {
             errors.put(field, msg);
         });
         return new ResponseEntity<>(new ResponseDTO(400, "Validation Error!", errors), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(ResponseException.class)
-    public ResponseEntity<ResponseDTO> handleResponseException(ResponseException ex) {
-        return new ResponseEntity<>(new ResponseDTO(ex.getStatus(), ex.getMessage()),
-                HttpStatus.valueOf(ex.getStatus()));
     }
 
     @ExceptionHandler(AuthenticationCredentialsNotFoundException.class)

@@ -2,10 +2,11 @@ package com.mindhub.homebanking.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mindhub.homebanking.dtos.RegisterDTO;
+import com.mindhub.homebanking.models.Client;
+import com.mindhub.homebanking.models.Role;
+import com.mindhub.homebanking.repositories.ClientRepository;
 import com.mindhub.homebanking.utils.TokenUtils;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,24 +21,40 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+//BeforeAll without static method
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ClientControllerTest {
 
     @Autowired
     private MockMvc mvc;
     @Autowired
     private PasswordEncoder passwordEncoder;
-
+    @Autowired
+    private ClientRepository clientRepository;
     @Autowired
     private TokenUtils tokenUtils;
     private final ObjectMapper mapper = new ObjectMapper();
     private String adminToken;
     private String clientToken;
+    private final RegisterDTO toCreate=new RegisterDTO("prueba","ejemplo","prueba@hotmail.com","Sarasa123");
+    private Client admin;
+    private Client client;
 
-    @BeforeEach
-    public void setup() throws Exception {
-        System.out.print("Starting Tests:");
-        adminToken="Bearer "+tokenUtils.generateToken("admin");
-        clientToken="Bearer "+tokenUtils.generateToken("melba@mindhub.com");
+    @BeforeAll
+    public void init(){
+        admin=new Client("pedro","sanchez","pedro@hotmail.com",passwordEncoder.encode("Sarasa123"), Role.ADMIN);
+        client=new Client("alejo","rodriguez","ale@gmail.com",passwordEncoder.encode("Sarasa123"), Role.CLIENT);
+        clientRepository.save(admin);
+        clientRepository.save(client);
+        adminToken="Bearer "+tokenUtils.generateToken(admin.getEmail());
+        clientToken="Bearer "+tokenUtils.generateToken(client.getEmail());
+    }
+
+    @AfterAll
+    public void reset(){
+        clientRepository.deleteByEmail(admin.getEmail());
+        clientRepository.deleteByEmail(client.getEmail());
+        clientRepository.deleteByEmail(toCreate.getEmail());
     }
 
     @Test
@@ -66,7 +83,7 @@ class ClientControllerTest {
         mvc.perform(request).andDo(MockMvcResultHandlers.print()).
                 andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.data.firstName").value("Melba"))
+                .andExpect(jsonPath("$.data.firstName").value("alejo"))
         ;
     }
 
@@ -75,8 +92,7 @@ class ClientControllerTest {
     void register() throws Exception {
         RequestBuilder request= MockMvcRequestBuilders.post("/api/clients")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(new RegisterDTO("Esteban",
-                        "Perez","esteban@gmail.com","Sarasa123")));
+                .content(mapper.writeValueAsString(toCreate));
         mvc.perform(request).andDo(MockMvcResultHandlers.print()).
                 andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
