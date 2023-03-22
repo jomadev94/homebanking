@@ -70,12 +70,6 @@ class ClientServiceTest {
         assertEquals("marta@hotmail.com", result.getEmail());
     }
 
-//    @Test
-//    @DisplayName("Get current client - without auth")
-//    void getCurrentNoAuth() {
-//        assertThrows(UnauthorizedException.class, () -> clientService.getCurrent(new User("","")));
-//    }
-
     @Test
     @DisplayName("Create a client - email already in use")
     void registerEmailExist() {
