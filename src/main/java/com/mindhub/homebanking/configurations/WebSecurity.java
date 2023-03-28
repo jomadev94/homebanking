@@ -80,16 +80,4 @@ public class WebSecurity {
         return http.build();
     }
 
-
-
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring()
-                // Spring Security should completely ignore URLs starting with /resources/
-                .antMatchers("/resources/**")
-                ;
-    }
-
-
-
 }
