@@ -19,9 +19,11 @@ import springfox.documentation.annotations.ApiIgnore;
 import springfox.documentation.swagger.web.SecurityConfiguration;
 
 import javax.annotation.security.RolesAllowed;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 
@@ -55,6 +57,7 @@ public class ClientController {
     }
 
     @Operation(summary = "Register")
+    @Transactional
     @PostMapping
     public ResponseEntity<ResponseDTO> register(@Valid @RequestBody RegisterDTO registerDTO) {
         Client client = clientService.register(registerDTO);
@@ -69,6 +72,13 @@ public class ClientController {
         Client client= clientService.getClient(loginDTO.getEmail());
         LoginResponseDto response=new LoginResponseDto(token,client);
         return new ResponseEntity<>(new ResponseDTO(response), HttpStatus.OK);
+    }
+
+    @Operation(summary="Verify account")
+    @PostMapping("/{code}/verify")
+    public ResponseEntity<ResponseDTO> verify(@PathVariable String code,@ApiIgnore Authentication auth){
+        clientService.verify(auth,code);
+        return new ResponseEntity<>(new ResponseDTO(),HttpStatus.OK);
     }
 
     @PutMapping("/{id}")

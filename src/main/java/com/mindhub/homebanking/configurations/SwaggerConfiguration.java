@@ -47,7 +47,7 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
     @Override
     public void addViewControllers(final ViewControllerRegistry registry) {
         // use setStatusCode(HttpStatus.XYZ) for any custom status code if required, e.g. MOVED_PERMANENTLY
-        registry.addRedirectViewController("/documentation", "/swagger-ui/index.html")
+        registry.addRedirectViewController("/", "/swagger-ui/index.html")
                 .setStatusCode(HttpStatus.MOVED_PERMANENTLY);
     }
 

@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 @Service
 public class ClientService {
@@ -42,6 +43,9 @@ public class ClientService {
 
     @Autowired
     private TokenUtils tokenUtils;
+
+    @Autowired
+    private EmailSenderService emailSenderService;
 
     public List<Client> getClients() {
         return clientRepository.findAll();
@@ -62,9 +66,20 @@ public class ClientService {
     public Client register(RegisterDTO client) {
         if (clientRepository.existsByEmail(client.getEmail()))
             throw new ForbiddenException("Email already in use");
-        Client created = clientRepository.save(new Client(client.getFirstName(), client.getLastName(), client.getEmail(), passwordEncoder.encode(client.getPassword()), Role.CLIENT));
+        Client created=new Client(client.getFirstName(), client.getLastName(), client.getEmail(), passwordEncoder.encode(client.getPassword()), Role.UNVERIFIED);
+        clientRepository.save(created);
         accountRepository.save(new Account("VIN" + ThreadLocalRandom.current().nextInt(10000, 99999999), LocalDateTime.now(), 0.0, created));
+        String html="<h1>Welcome to Homebanking</h1>" +
+                "<p>In order to use our service you must verify your account through this <a href='http://localhost:5173/"+created.getCode().toString()+"/verify'>link</a></p>";
+        emailSenderService.sendEmailHtml(client.getEmail(),"Client validation",html);
         return created;
+    }
+
+    public void verify(Authentication auth,String code){
+        Client current=clientRepository.findByEmail(auth.getName()).orElseThrow(UnauthorizedException::new);
+        if(!current.getCode().toString().equals(code)) throw new UnauthorizedException();
+        current.setRole(Role.CLIENT);
+        clientRepository.flush();
     }
 
     public String login(LoginDTO loginDTO){
