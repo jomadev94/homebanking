@@ -58,6 +58,8 @@ public class WebSecurity {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                // Disable xssProtection
+                .headers().xssProtection().disable().and()
                 // Disabled csrf tokens validation
                 .csrf().disable()
                 // Action to make when auth excepcion appear
