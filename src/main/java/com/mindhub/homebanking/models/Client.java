@@ -5,6 +5,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 public class Client {
@@ -21,6 +22,8 @@ public class Client {
     private String password;
 
     private Role role;
+
+    private UUID code;
 
     @OneToMany(mappedBy = "client", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
     private List<Account> accounts = new ArrayList<>();
@@ -40,6 +43,7 @@ public class Client {
         this.email = email;
         this.password = password;
         this.role=role;
+        this.code=UUID.randomUUID();
     }
 
     public long getId() {
@@ -125,5 +129,13 @@ public class Client {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public UUID getCode() {
+        return code;
+    }
+
+    public void setCode(UUID code) {
+        this.code = code;
     }
 }

@@ -6,8 +6,8 @@ import java.util.Map;
 
 public class ResponseDTO {
 
-    private int status;
-    private String message;
+    private int status=200;
+    private String message="Operation success";
     private Object data;
 
     public ResponseDTO(){}
@@ -23,11 +23,12 @@ public class ResponseDTO {
     }
 
     public ResponseDTO(int status, Object data) {
-        this(status,"Operation success",data);
+        this.data=data;
+        this.status=status;
     }
 
     public ResponseDTO(Object data) {
-        this(200,data);
+        this.data=data;
     }
 
     public int getStatus() {

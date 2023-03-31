@@ -2,6 +2,9 @@ package com.mindhub.homebanking;
 
 import com.mindhub.homebanking.models.*;
 import com.mindhub.homebanking.repositories.*;
+import com.mindhub.homebanking.services.EmailSenderService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -9,7 +12,9 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
@@ -17,6 +22,8 @@ import java.util.Set;
 
 @SpringBootApplication
 public class HomebankingApplication {
+
+    private static final Logger logger= LoggerFactory.getLogger(HomebankingApplication.class);
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -27,6 +34,7 @@ public class HomebankingApplication {
 
     @Bean
     public CommandLineRunner initData(ClientRepository clientRepo, AccountRepository accountRepo, TransactionRepository transactionRepo, LoanRepository loanRepo, ClientLoanRepository clientLoanRepo, CardRepository cardRepo) {
+        logger.info("Init Database...");
         return (args) -> {
             loanRepo.deleteAll();
             transactionRepo.deleteAll();
