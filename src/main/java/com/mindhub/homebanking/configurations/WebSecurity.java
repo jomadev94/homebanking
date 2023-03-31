@@ -59,7 +59,7 @@ public class WebSecurity {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 // Disable xssProtection
-                .headers().defaultsDisabled().and()
+                .headers().disable()
                 // Disabled csrf tokens validation
                 .csrf().disable()
                 // Action to make when auth excepcion appear
