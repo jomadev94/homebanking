@@ -37,10 +37,5 @@ public class ControllerAdvice {
         return new ResponseEntity<>(new ResponseDTO(401,ex.getMessage()),HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler(AuthenticationCredentialsNotFoundException.class)
-    public ResponseEntity<ResponseDTO> handleJwtException(AuthenticationCredentialsNotFoundException ex){
-        return new ResponseEntity<>(new ResponseDTO(401,ex.getMessage()),HttpStatus.UNAUTHORIZED);
-    }
-
 
 }
