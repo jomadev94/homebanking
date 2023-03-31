@@ -23,7 +23,7 @@ import java.util.Set;
 @SpringBootApplication
 public class HomebankingApplication {
 
-    private static final Logger logger= LoggerFactory.getLogger(HomebankingApplication.class);
+//    private static final Logger logger= LoggerFactory.getLogger(HomebankingApplication.class);
 
     @Autowired
     private PasswordEncoder passwordEncoder;
