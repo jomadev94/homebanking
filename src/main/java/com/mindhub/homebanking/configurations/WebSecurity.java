@@ -48,7 +48,7 @@ public class WebSecurity {
         configuration.setAllowedOrigins(List.of("http://localhost:5173"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowCredentials(true);
-        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
@@ -71,12 +71,10 @@ public class WebSecurity {
                 .cors().and()
                 // Routes permissions
                 .authorizeRequests()
-                .antMatchers("/api/clients/login*").permitAll()
+                .antMatchers("/api/clients/login").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/clients").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/clients").hasAuthority("ADMIN")
-                .antMatchers("/h2-console/**", "/rest/**").hasAuthority("ADMIN")
                 .antMatchers("/api/**").authenticated();
-
         return http.build();
     }
 
