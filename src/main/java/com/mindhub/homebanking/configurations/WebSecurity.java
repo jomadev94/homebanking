@@ -58,15 +58,13 @@ public class WebSecurity {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                // Disable xssProtection
-                .headers().disable()
                 // Disabled csrf tokens validation
                 .csrf().disable()
                 // Action to make when auth excepcion appear
                 .exceptionHandling().authenticationEntryPoint((req, res, exc) ->
                         res.sendError(HttpServletResponse.SC_UNAUTHORIZED)).and()
                 // Disabled sessions
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                //.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 // Add Jwt filter
                 .addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class)
                 // Enable cors
