@@ -45,7 +45,7 @@ public class WebSecurity {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("https://homebanking-production-fbbd.up.railway.app","http://localhost:3000"));
+        configuration.setAllowedOrigins(List.of("https://homebanking-production-fbbd.up.railway.app","http://localhost:3000","https://thunderous-banoffee-41ed7e.netlify.app"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
