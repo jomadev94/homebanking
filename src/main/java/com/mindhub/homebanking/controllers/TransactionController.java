@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.transaction.Transactional;
 
@@ -24,7 +25,7 @@ public class TransactionController {
 
     @PostMapping("/transaction")
     @Transactional
-    public ResponseEntity<?> accountTransaction(@RequestBody AccountTransactionDTO transaction, Authentication auth) {
+    public ResponseEntity<?> accountTransaction(@RequestBody AccountTransactionDTO transaction, @ApiIgnore Authentication auth) {
         transactionService.create(auth, transaction);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
