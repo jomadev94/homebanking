@@ -68,7 +68,7 @@ public class ClientService {
             throw new ForbiddenException("Email already in use");
         Client created=new Client(client.getFirstName(), client.getLastName(), client.getEmail(), passwordEncoder.encode(client.getPassword()), Role.UNVERIFIED);
         clientRepository.save(created);
-        accountRepository.save(new Account("VIN" + ThreadLocalRandom.current().nextInt(10000, 99999999), LocalDateTime.now(), 0.0, created));
+        accountRepository.save(new Account("VIN" + ThreadLocalRandom.current().nextInt(100, 99999), LocalDateTime.now(), 10000.0, created));
         String html="<h1>Welcome to Homebanking</h1>" +
                 "<p>In order to use our service you must verify your account through this <a href='http://localhost:5173/"+created.getCode().toString()+"/verify'>link</a></p>";
         emailSenderService.sendEmailHtml(client.getEmail(),"Client validation",html);
