@@ -37,7 +37,7 @@ public class AccountService {
         if(current.getAccounts().size() == 3){
             throw new ForbiddenException("The maximum number of accounts allowed was reached");
         }
-        return accountRepository.save(new Account("VIN"+ ThreadLocalRandom.current().nextInt(10000,99999999), LocalDateTime.now(),0.0,current));
+        return accountRepository.save(new Account("VIN"+ ThreadLocalRandom.current().nextInt(10000,99999999), LocalDateTime.now(),10000.0,current));
     }
 
 
